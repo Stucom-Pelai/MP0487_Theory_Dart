@@ -383,7 +383,7 @@ void main() {
   
   // Example
   List<int> myList = [1, 2, 2, 3];  // [1, 2, 2, 3]
-  Set<int> mySet = {1, 2, 2, 3};     // {1, 2, 3}
+  Set<int> mySet = {1, 2, 3};     // {1, 2, 3}
   Map<String, int> myMap = {"a": 1, "b": 2};  // {"a": 1, "b": 2}
   
   print("\nList: $myList");

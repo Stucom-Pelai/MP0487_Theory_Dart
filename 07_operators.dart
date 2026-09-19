@@ -46,7 +46,7 @@ void main(){
   
   print("x = $x, y = $y");
   print("AND (&&): ${x && y}");  // false
-  print("OR (||): ${x || y}");   // true
+  print("OR (||): ${y || x}");   // true
   print("NOT (!): ${!x}");       // false
   print("NOT (!y): ${!y}");      // true
   

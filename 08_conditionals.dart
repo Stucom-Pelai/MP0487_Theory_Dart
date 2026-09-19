@@ -67,26 +67,8 @@ void main() {
   } else {
     grade = "F";
   }
-  print("Percentage: $percent => Grade: $grade");
+  print("Percentage: $percent => Grade: $grade");   
   
-  
-  // ============================================
-  // 4. NESTED IF STATEMENTS
-  // ============================================
-  print("\n=== NESTED IF STATEMENTS ===");
-  
-  int userAge = 25;
-  bool hasLicense = true;
-  
-  if (userAge >= 18) {
-    if (hasLicense) {
-      print("You can drive");  // This executes
-    } else {
-      print("You need a license to drive");
-    }
-  } else {
-    print("You are too young to drive");
-  }
   
   // Practical example: Login system
   String username = "john";
@@ -207,29 +189,7 @@ void main() {
   
   
   // ============================================
-  // 9. COMPLEX CONDITION WITH IF-ELSE
-  // ============================================
-  print("\n=== COMPLEX CONDITIONS ===");
-  
-  int userAge2 = 25;
-  bool isStudent = false;
-  double salary = 50000.0;
-  
-  if (userAge2 >= 18 && userAge2 <= 65) {
-    if (isStudent) {
-      print("Student discount available");
-    } else if (salary > 30000) {
-      print("Premium membership eligible");  // This executes
-    } else {
-      print("Standard membership");
-    }
-  } else {
-    print("Membership not available for your age");
-  }
-  
-  
-  // ============================================
-  // 10. PRACTICAL EXAMPLE: CALCULATOR WITH SWITCH
+  // 9. PRACTICAL EXAMPLE: CALCULATOR WITH SWITCH
   // ============================================
   print("\n=== PRACTICAL EXAMPLE: CALCULATOR ===");
   
@@ -263,7 +223,7 @@ void main() {
   
   
   // ============================================
-  // 11. PRACTICAL EXAMPLE: USER ROLE CHECK
+  // 10. PRACTICAL EXAMPLE: USER ROLE CHECK
   // ============================================
   print("\n=== PRACTICAL EXAMPLE: USER ROLE ===");
   
@@ -285,7 +245,7 @@ void main() {
   
   
   // ============================================
-  // 12. SWITCH VS IF-ELSE COMPARISON
+  // 11. SWITCH VS IF-ELSE COMPARISON
   // ============================================
   print("\n=== SWITCH VS IF-ELSE ===");
   print("SWITCH: Better for multiple specific values (day of week, status codes)");

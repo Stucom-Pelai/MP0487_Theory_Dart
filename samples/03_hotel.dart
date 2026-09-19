@@ -1,8 +1,9 @@
 import 'dart:io';
+import 'config.dart';
 
 void main() {
   // Parallel lists mapping Room properties to their current booking status
-  List<int> roomNumbers =;
+  List<int> roomNumbers = [101, 102, 103, 104, 105];
   List<String> roomTypes = ["Single", "Double", "Suite", "Double", "Penthouse"];
   List<double> nightlyRates = [75.0, 120.0, 250.0, 130.0, 500.0];
   List<bool> isOccupied = [false, true, false, false, true];
@@ -10,18 +11,18 @@ void main() {
 
   bool operational = true;
 
-  print("=== Welcome to the Grand Horizon Hotel Management System ===");
+  print(HotelConfig.welcomeMsg);
 
   // Primary loop to maintain the administrative dashboard
   while (operational) {
-    print("\n--- FRONT DESK MENU ---");
-    print("1. View All Rooms Status");
-    print("2. Book/Check-In a Guest");
-    print("3. Check-Out a Guest (Generate Bill)");
-    print("4. Filter Available Rooms by Budget");
-    print("5. Calculate Current Total Revenue Potential");
-    print("6. Exit");
-    stdout.write("Enter command (1-6): ");
+    print("\n${HotelConfig.menuHeader}");
+    print(HotelConfig.option1);
+    print(HotelConfig.option2);
+    print(HotelConfig.option3);
+    print(HotelConfig.option4);
+    print(HotelConfig.option5);
+    print(HotelConfig.option6);
+    stdout.write(HotelConfig.selectPrompt);
 
     String? choice = stdin.readLineSync();
 
@@ -29,24 +30,23 @@ void main() {
       
       // 1. VIEW ALL ROOMS STATUS
       case "1":
-        print("\n--- Room Status Directory ---");
+        print("\n${HotelConfig.roomHeader}");
         for (int i = 0; i < roomNumbers.length; i++) {
           // Conditional ternary logic simulated via standard if/else
-          String status = "AVAILABLE";
+          String status = HotelConfig.availableStatus;
           if (isOccupied[i]) {
-            status = "OCCUPIED (Guest: ${guestNames[i]})";
-          }
-          print("Room ${roomNumbers[i]} [${roomTypes[i]}] - \$${nightlyRates[i]}/night | Status: $status");
+            status = "${HotelConfig.occupiedStatus}${guestNames[i]})";}
+          print("${HotelConfig.roomFormat}${roomNumbers[i]}${HotelConfig.roomTypeFormat}${roomTypes[i]}${HotelConfig.rateFormat}${nightlyRates[i]}${HotelConfig.nightLabel}$status");
         }
         break;
 
       // 2. CHECK-IN A GUEST
       case "2":
-        stdout.write("Enter Room Number to book: ");
+        stdout.write(HotelConfig.bookPrompt);
         int? targetRoom = int.tryParse(stdin.readLineSync() ?? "");
 
         if (targetRoom == null) {
-          print("❌ Invalid entry. Room must be a number.");
+          print(HotelConfig.invalidInputMsg);
         } else {
           bool roomFound = false;
           for (int i = 0; i < roomNumbers.length; i++) {
@@ -55,35 +55,35 @@ void main() {
               
               // Relational operator checking if the room is taken
               if (isOccupied[i]) {
-                print("❌ Sorry, Room $targetRoom is already occupied by ${guestNames[i]}.");
+                print("${HotelConfig.occupiedMsg}$targetRoom${HotelConfig.occupiedByMsg}${guestNames[i]}.");
               } else {
-                stdout.write("Enter Guest Name: ");
+                stdout.write(HotelConfig.guestPrompt);
                 String? clientName = stdin.readLineSync()?.trim();
                 
                 if (clientName != null && clientName.isNotEmpty) {
                   isOccupied[i] = true;
                   guestNames[i] = clientName;
-                  print("✅ Success! Room $targetRoom is now checked-in to $clientName.");
+                  print("${HotelConfig.checkInSuccessMsg}$targetRoom${HotelConfig.checkInToMsg}$clientName.");
                 } else {
-                  print("❌ Guest name cannot be empty.");
+                  print(HotelConfig.emptyNameMsg);
                 }
               }
               break; // Stop looking through the list
             }
           }
           if (!roomFound) {
-            print("❌ Room number $targetRoom does not exist in our hotel.");
+            print("${HotelConfig.roomNotFoundMsg}$targetRoom${HotelConfig.doesNotExistMsg}");
           }
         }
         break;
 
       // 3. CHECK-OUT A GUEST & COMPUTE BILL
       case "3":
-        stdout.write("Enter Room Number checking out: ");
+        stdout.write(HotelConfig.checkoutPrompt);
         int? checkoutRoom = int.tryParse(stdin.readLineSync() ?? "");
 
         if (checkoutRoom == null) {
-          print("❌ Invalid room configuration.");
+          print(HotelConfig.invalidConfigMsg);
         } else {
           bool roomFound = false;
           for (int i = 0; i < roomNumbers.length; i++) {
@@ -119,32 +119,32 @@ void main() {
             }
           }
           if (!roomFound) {
-            print("❌ Room $checkoutRoom not found.");
+            print("${HotelConfig.notFoundMsg}$checkoutRoom${HotelConfig.roomNotExistMsg}");
           }
         }
         break;
 
       // 4. FILTER AVAILABLE ROOMS BY BUDGET
       case "4":
-        stdout.write("Enter maximum nightly price comfort limit (\$): ");
+        stdout.write(HotelConfig.budgetPrompt);
         double? maxBudget = double.tryParse(stdin.readLineSync() ?? "");
 
         if (maxBudget == null || maxBudget <= 0) {
-          print("❌ Please enter a realistic budget figure.");
+          print(HotelConfig.budgetErrorMsg);
         } else {
-          print("\n💸 Matches under \$${maxBudget.toStringAsFixed(2)} that are currently open:");
+          print("\n${HotelConfig.budgetResultMsg}${maxBudget.toStringAsFixed(2)}${HotelConfig.openMsg}");
           bool matchFound = false;
 
           for (int i = 0; i < roomNumbers.length; i++) {
             // Logical operator AND (&&) to evaluate status and price thresholds simultaneously
             if (!isOccupied[i] && nightlyRates[i] <= maxBudget) {
-              print(" - Room ${roomNumbers[i]} (${roomTypes[i]}) at \$${nightlyRates[i]}/night");
+              print("${HotelConfig.roomResultFormat}${roomNumbers[i]}${HotelConfig.roomTypeResultMsg}${roomTypes[i]}${HotelConfig.rateResultMsg}${nightlyRates[i]}/night");
               matchFound = true;
             }
           }
 
           if (!matchFound) {
-            print("No matching available rooms found within your budget range.");
+            print(HotelConfig.noMatchMsg);
           }
         }
         break;
@@ -161,19 +161,19 @@ void main() {
           }
         }
 
-        print("\n💰 --- Financial State ---");
-        print("Live Nightly Revenue (Occupied Rooms): \$${activeRevenue.toStringAsFixed(2)}");
-        print("Maximum Potential Value (All Rooms Booked): \$${totalHotelValue.toStringAsFixed(2)}");
+        print("\n${HotelConfig.financialHeader}");
+        print("${HotelConfig.occupiedRevenueMsg}${activeRevenue.toStringAsFixed(2)}");
+        print("${HotelConfig.maxRevenueMsg}${totalHotelValue.toStringAsFixed(2)}");
         break;
 
       // 6. QUIT
       case "6":
-        print("Closing the reception terminal... Good night.");
+        print(HotelConfig.exitMsg);
         operational = false;
         break;
 
       default:
-        print("❌ Unknown command selection. Retrying menu pipeline.");
+        print(HotelConfig.unknownCommandMsg);
     }
   }
 }

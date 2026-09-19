@@ -290,11 +290,11 @@ void main() {
   // ============================================
   print("\n=== PRACTICAL: FIBONACCI SEQUENCE ===");
   
-  int n = 7;
+  int num = 7;
   int a = 0, b = 1;
   
   print("First $n Fibonacci numbers:");
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < num; i++) {
     print(a);
     int temp = a + b;
     a = b;

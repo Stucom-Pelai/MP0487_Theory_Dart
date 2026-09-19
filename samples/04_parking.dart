@@ -1,27 +1,28 @@
 import 'dart:io';
+import 'config.dart';
 
 void main() {
   // Parallel lists mapping parking spot details
-  List<int> spotNumbers =;
+  List<int> spotNumbers = [1, 2, 3, 4, 5];
   List<String> spotTypes = ["Standard", "Compact", "EV Charging", "Standard", "Handicap"];
   List<bool> isOccupied = [false, true, false, false, true];
   List<String> licensePlates = ["None", "ABC-1234", "None", "None", "XYZ-9876"];
-  List<int> entryHours =; // Mocked entry hour (24-hour clock, e.g., 2 = 2 AM)
+  List<int> entryHours = [0, 10, 0, 0, 14]; // Mocked entry hour (24-hour clock, e.g., 2 = 2 AM)
 
   double hourlyRate = 3.50; // Flat fee per hour
   bool systemActive = true;
 
-  print("=== Welcome to the Smart Parking Lot Terminal ===");
+  print(ParkingConfig.welcomeMsg);
 
   // Primary loop to keep the terminal running
   while (systemActive) {
-    print("\n--- PARKING TERMINAL MENU ---");
-    print("1. View Parking Lot Layout");
-    print("2. Park a Car (Check-In)");
-    print("3. Retrieve Car & Pay (Check-Out)");
-    print("4. Find Free Spots by Type (EV, Handicap, etc.)");
-    print("5. Exit System");
-    stdout.write("Select an option (1-5): ");
+    print("\n${ParkingConfig.menuHeader}");
+    print(ParkingConfig.option1);
+    print(ParkingConfig.option2);
+    print(ParkingConfig.option3);
+    print(ParkingConfig.option4);
+    print(ParkingConfig.option5);
+    stdout.write(ParkingConfig.selectPrompt);
 
     String? choice = stdin.readLineSync();
 
@@ -29,28 +30,28 @@ void main() {
       
       // 1. VIEW PARKING LOT LAYOUT
       case "1":
-        print("\n--- Live Parking Map ---");
+        print("\n${ParkingConfig.mapHeader}");
         int totalFree = 0;
 
         for (int i = 0; i < spotNumbers.length; i++) {
-          String status = "🟢 AVAILABLE";
+          String status = ParkingConfig.availableStatus;
           if (isOccupied[i]) {
-            status = "🔴 OCCUPIED [Car: ${licensePlates[i]}]";
+            status = "${ParkingConfig.occupiedStatus}${licensePlates[i]}]";
           } else {
             totalFree++;
           }
-          print("Spot ${spotNumbers[i]} (${spotTypes[i]}) -> $status");
+          print("${ParkingConfig.spotFormat}${spotNumbers[i]}${ParkingConfig.typeFormat}${spotTypes[i]}${ParkingConfig.statusFormat}$status");
         }
-        print("Summary: $totalFree out of ${spotNumbers.length} spots are available.");
+        print("${ParkingConfig.summaryMsg}$totalFree${ParkingConfig.outOfMsg}${spotNumbers.length}${ParkingConfig.availableMsg}");
         break;
 
       // 2. PARK A CAR (CHECK-IN)
       case "2":
-        stdout.write("Enter Spot Number to park in: ");
+        stdout.write(ParkingConfig.parkPrompt);
         int? targetedSpot = int.tryParse(stdin.readLineSync() ?? "");
 
         if (targetedSpot == null) {
-          print("❌ Invalid entry. Spot must be a number.");
+          print(ParkingConfig.invalidInputMsg);
         } else {
           bool spotFound = false;
           for (int i = 0; i < spotNumbers.length; i++) {
@@ -58,12 +59,12 @@ void main() {
               spotFound = true;
 
               if (isOccupied[i]) {
-                print("❌ Spot $targetedSpot is already taken!");
+                print("${ParkingConfig.takenMsg}$targetedSpot${ParkingConfig.takenWarningMsg}");
               } else {
-                stdout.write("Enter Car License Plate: ");
+                stdout.write(ParkingConfig.platePrompt);
                 String? plate = stdin.readLineSync()?.trim().toUpperCase();
 
-                stdout.write("Enter Current Hour (0-23): ");
+                stdout.write(ParkingConfig.hourPrompt);
                 int? currentHour = int.tryParse(stdin.readLineSync() ?? "");
 
                 // Logic verification using operators (&&, >=, <=)
@@ -71,27 +72,27 @@ void main() {
                   isOccupied[i] = true;
                   licensePlates[i] = plate;
                   entryHours[i] = currentHour;
-                  print("✅ Car '$plate' successfully parked in Spot $targetedSpot at hour $currentHour:00.");
+                  print("${ParkingConfig.parkSuccessMsg}'$plate${ParkingConfig.parkedAtMsg}$targetedSpot${ParkingConfig.atHourMsg}$currentHour${ParkingConfig.timeFormat}");
                 } else {
-                  print("❌ Invalid plate or invalid 24-hour timestamp.");
+                  print(ParkingConfig.invalidPlateMsg);
                 }
               }
               break; 
             }
           }
           if (!spotFound) {
-            print("❌ Parking Spot $targetedSpot does not exist.");
+            print("${ParkingConfig.spotNotExistMsg}$targetedSpot${ParkingConfig.spotNotExistWarningMsg}");
           }
         }
         break;
 
       // 3. RETRIEVE CAR & PAY (CHECK-OUT)
       case "3":
-        stdout.write("Enter License Plate or Spot Number to leave: ");
+        stdout.write(ParkingConfig.retrievePrompt);
         String? input = stdin.readLineSync()?.trim().toUpperCase();
 
         if (input == null || input.isEmpty) {
-          print("❌ Input cannot be empty.");
+          print(ParkingConfig.emptyInputMsg);
         } else {
           bool carFound = false;
           int? inputAsSpot = int.tryParse(input);
@@ -140,51 +141,51 @@ void main() {
             }
           }
           if (!carFound) {
-            print("❌ No active parked car matches standard identifier: '$input'.");
+            print("${ParkingConfig.noCarMsg}'$input'.");
           }
         }
         break;
 
       // 4. FILTER FREE SPOTS BY TYPE
       case "4":
-        print("\nSelect Type to Filter:\n1. Standard\n2. Compact\n3. EV Charging\n4. Handicap");
-        stdout.write("Enter choice (1-4): ");
+        print("\n${ParkingConfig.filterHeader}");
+        stdout.write(ParkingConfig.filterPrompt);
         String? filterChoice = stdin.readLineSync();
         
         String targetType = "";
-        if (filterChoice == "1") targetType = "Standard";
-        else if (filterChoice == "2") targetType = "Compact";
-        else if (filterChoice == "3") targetType = "EV Charging";
-        else if (filterChoice == "4") targetType = "Handicap";
+        if (filterChoice == "1") targetType = ParkingConfig.standardType;
+        else if (filterChoice == "2") targetType = ParkingConfig.compactType;
+        else if (filterChoice == "3") targetType = ParkingConfig.evType;
+        else if (filterChoice == "4") targetType = ParkingConfig.handicapType;
 
         if (targetType.isEmpty) {
-          print("❌ Invalid selection choice.");
+          print(ParkingConfig.invalidSelectionMsg);
         } else {
-          print("\n🔍 Available '$targetType' spots:");
+          print("\n${ParkingConfig.filterResultMsg}'$targetType${ParkingConfig.spotsMsg}");
           bool matchFound = false;
 
           for (int i = 0; i < spotNumbers.length; i++) {
             // Logical operator combining conditions
             if (!isOccupied[i] && spotTypes[i] == targetType) {
-              print(" - Spot ${spotNumbers[i]}");
+              print("${ParkingConfig.spotListMsg}${spotNumbers[i]}");
               matchFound = true;
             }
           }
 
           if (!matchFound) {
-            print("No open slots found for category: $targetType.");
+            print("${ParkingConfig.noSpotsMsg}$targetType.");
           }
         }
         break;
 
       // 5. EXIT SYSTEM
       case "5":
-        print("Shutting down the parking grid database. Goodbye!");
+        print(ParkingConfig.exitMsg);
         systemActive = false;
         break;
 
       default:
-        print("❌ Invalid action item. Use keys 1 through 5.");
+        print(ParkingConfig.invalidActionMsg);
     }
   }
 }
